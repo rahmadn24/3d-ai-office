@@ -15,7 +15,17 @@ export interface Receivable {
   pdf: string;
 }
 
-type Tab = "dashboard" | "ngobrol" | "piutang";
+export interface KasEntry {
+  id: number;
+  tanggal: string;
+  keterangan: string;
+  akun: string;
+  debit: number;
+  kredit: number;
+  ts: string;
+}
+
+type Tab = "dashboard" | "ngobrol" | "piutang" | "kas";
 
 export interface RunRow {
   id: number;
@@ -25,12 +35,14 @@ export interface RunRow {
   summary: string | null;
 }
 
-export default function Hub({ pending, divisions, receivables, total, runs }: {
+export default function Hub({ pending, divisions, receivables, total, runs, kas, kasTotal }: {
   pending: Decision[];
   divisions: Array<{ id: string; name: string; role: string }>;
   receivables: Receivable[];
   total: number;
   runs: RunRow[];
+  kas: KasEntry[];
+  kasTotal: number;
 }) {
   const [tab, setTab] = useState<Tab>("dashboard");
   const [collapsed, setCollapsed] = useState(false);
@@ -66,14 +78,14 @@ export default function Hub({ pending, divisions, receivables, total, runs }: {
         background: "rgba(13,15,24,0.92)", backdropFilter: "blur(16px)",
         borderLeft: "1px solid rgba(255,255,255,0.08)", padding: "14px 16px",
       }}>
-        <div style={{ display: "flex", gap: 6, marginBottom: 12, alignItems: "center" }}>
-          {(["dashboard", "ngobrol", "piutang"] as const).map((t) => (
+        <div style={{ display: "flex", gap: 6, marginBottom: 12, alignItems: "center", flexWrap: "wrap" }}>
+          {(["dashboard", "ngobrol", "piutang", "kas"] as const).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
               style={tab === t ? {} : { background: "rgba(255,255,255,0.03)", color: "#F8FAFC", border: "1px solid rgba(255,255,255,0.08)", boxShadow: "none" }}
             >
-              {t === "dashboard" ? `dashboard (${pending.length})` : t === "ngobrol" ? "ngobrol" : `piutang`}
+              {t === "dashboard" ? `dashboard (${pending.length})` : t === "ngobrol" ? "ngobrol" : t === "piutang" ? "piutang" : `kas`}
             </button>
           ))}
           <span style={{ flex: 1 }} />
@@ -120,6 +132,28 @@ export default function Hub({ pending, divisions, receivables, total, runs }: {
                 {r.pdf && <><br /><small>PDF: <code>{r.pdf}</code></small></>}
               </div>
             ))}
+          </>
+        )}
+
+        {tab === "kas" && (
+          <>
+            <h2 style={{ marginTop: 0 }}>Buku kas <small>· Laras · append-only</small></h2>
+            {kas.length === 0 && <p><small>Belum ada entri kas. Laras bangun 04:00.</small></p>}
+            {kas.map((e) => (
+              <div className="card" key={e.id} style={{ padding: "0.6rem 0.8rem" }}>
+                <span className="badge">{e.akun}</span>
+                <span className="badge" style={e.debit > 0 ? { background: "rgba(16,185,129,0.1)", borderColor: "rgba(16,185,129,0.25)", color: "#10b981" } : { background: "rgba(239,68,68,0.1)", borderColor: "rgba(239,68,68,0.3)", color: "#ef4444" }}>
+                  {e.debit > 0 ? `+${rp(e.debit)}` : `−${rp(e.kredit)}`}
+                </span>
+                <br />
+                <small>{e.tanggal} · {e.keterangan}</small>
+              </div>
+            ))}
+            {kas.length > 0 && (
+              <p><small>
+                Masuk: <strong>{rp(kasTotal)}</strong> · Keluar: <strong>{rp(kas.filter((e) => e.kredit > 0).reduce((a, e) => a + e.kredit, 0))}</strong>
+              </small></p>
+            )}
           </>
         )}
       </aside>
