@@ -1,0 +1,121 @@
+{
+  "window": {
+    "start": "22:00",
+    "end": "06:00",
+    "timezone": "Asia/Jakarta"
+  },
+  "maxParallel": 1,
+  "retryFailedOnce": true,
+  "members": {
+    "bima": {
+      "wake": "22:10",
+      "enabled": true,
+      "skipIfIdle": true,
+      "after": []
+    },
+    "bima-eka": {
+      "wake": "22:35",
+      "enabled": true,
+      "skipIfIdle": false,
+      "after": [
+        "bima"
+      ]
+    },
+    "sari": {
+      "wake": "23:40",
+      "enabled": true,
+      "skipIfIdle": false,
+      "after": []
+    },
+    "sari-riko": {
+      "wake": "00:10",
+      "enabled": true,
+      "skipIfIdle": false,
+      "after": [
+        "sari"
+      ]
+    },
+    "sari-ayu": {
+      "wake": "00:45",
+      "enabled": true,
+      "skipIfIdle": false,
+      "after": [
+        "sari-riko"
+      ]
+    },
+    "gilang": {
+      "wake": "01:15",
+      "enabled": true,
+      "skipIfIdle": false,
+      "after": []
+    },
+    "gilang-maya": {
+      "wake": "01:45",
+      "enabled": true,
+      "skipIfIdle": false,
+      "after": [
+        "gilang"
+      ]
+    },
+    "dimas": {
+      "wake": "05:20",
+      "enabled": true,
+      "skipIfIdle": false,
+      "after": []
+    },
+    "dimas-bagas": {
+      "wake": "05:35",
+      "enabled": true,
+      "skipIfIdle": false,
+      "after": []
+    },
+    "dimas-kirana": {
+      "wake": "05:50",
+      "enabled": true,
+      "skipIfIdle": false,
+      "after": [
+        "dimas"
+      ]
+    },
+    "laras": {
+      "wake": "04:00",
+      "enabled": true,
+      "skipIfIdle": false,
+      "after": [
+        "bima"
+      ]
+    },
+    "raka": {
+      "wake": "03:10",
+      "enabled": true,
+      "skipIfIdle": true,
+      "after": []
+    },
+    "nadia": {
+      "wake": "02:30",
+      "enabled": true,
+      "skipIfIdle": false,
+      "after": []
+    },
+    "dewi": {
+      "wake": "00:20",
+      "enabled": true,
+      "skipIfIdle": true,
+      "after": []
+    },
+    "builder": {
+      "wake": null,
+      "enabled": true,
+      "skipIfIdle": false,
+      "after": []
+    },
+    "kreatif": {
+      "wake": "01:00",
+      "enabled": true,
+      "skipIfIdle": true,
+      "after": [
+        "sari-ayu"
+      ]
+    }
+  }
+}

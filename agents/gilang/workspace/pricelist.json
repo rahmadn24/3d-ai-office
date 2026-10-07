@@ -1,0 +1,8 @@
+{
+  "currency": "IDR",
+  "items": [
+    { "name": "Landing page", "price": 1500000 },
+    { "name": "Foto produk", "price": 600000 },
+    { "name": "Maintenance per bulan", "price": 500000 }
+  ]
+}

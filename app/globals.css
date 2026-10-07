@@ -1,0 +1,145 @@
+/* Synthetic Void theme — vitalitas: void gelap + cyan elektrik + glass */
+
+:root {
+  --void: #090a0f;
+  --surface-1: #0d0f18;
+  --surface-2: #141724;
+  --surface-3: #1d2133;
+  --border-glass: rgba(255, 255, 255, 0.08);
+  --border-glow: rgba(0, 240, 255, 0.35);
+  --cyan: #00f0ff;
+  --violet: #8a2be2;
+  --emerald: #10b981;
+  --danger: #ef4444;
+  --text-1: #f8fafc;
+  --text-2: #94a3b8;
+  --text-3: #475569;
+}
+
+body {
+  font-family: var(--font-body), system-ui, sans-serif;
+  max-width: 860px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  color: var(--text-1);
+  background:
+    radial-gradient(900px 500px at 15% -5%, rgba(138, 43, 226, 0.07), transparent 60%),
+    radial-gradient(800px 500px at 90% 0%, rgba(0, 240, 255, 0.05), transparent 60%),
+    var(--void);
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display), system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+a { color: var(--cyan); }
+code, pre { font-family: var(--font-mono), monospace; }
+
+.card {
+  border: 1px solid var(--border-glass);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.5rem;
+  padding: 1rem 1.2rem;
+  margin: 1rem 0;
+  background: rgba(13, 15, 24, 0.7);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.56);
+}
+
+.badge {
+  display: inline-block;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  margin-right: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-glass);
+  color: var(--text-2);
+}
+.badge.needs {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: var(--danger);
+}
+.badge.ok {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.25);
+  color: var(--emerald);
+}
+
+button {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-weight: 600;
+  background: var(--cyan);
+  color: #090a0f;
+  border: 0;
+  border-radius: 0.5rem;
+  padding: 0.55rem 1.1rem;
+  margin-right: 0.5rem;
+  cursor: pointer;
+  min-height: 44px;
+  transition: box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+}
+button:hover { box-shadow: 0 0 20px rgba(0, 240, 255, 0.4); }
+button:active { transform: scale(0.97); }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+button:hover { box-shadow: 0 0 20px rgba(0, 240, 255, 0.4); }
+button.reject {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: var(--danger);
+}
+button.reject:hover { box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); }
+button:disabled { opacity: 0.5; cursor: default; box-shadow: none; }
+
+pre {
+  white-space: pre-wrap;
+  font-size: 0.8rem;
+  color: var(--text-2);
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-glass);
+  border-radius: 0.5rem;
+  padding: 0.7rem;
+}
+small { color: var(--text-2); }
+ul { padding-left: 1.2rem; }
+
+.card { transition: border-color 0.2s ease, box-shadow 0.2s ease; }
+.card:hover { border-color: rgba(0, 240, 255, 0.25); }
+
+input, select {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+input:focus, select:focus {
+  border-color: var(--cyan) !important;
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.2);
+  outline: none;
+}
+
+.live-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--emerald);
+  margin-right: 6px;
+  animation: live-ping 2s ease-in-out infinite;
+}
+@keyframes live-ping {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5); }
+  50% { opacity: 0.6; box-shadow: 0 0 0 5px rgba(16, 185, 129, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

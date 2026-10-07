@@ -1,0 +1,10 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "9router/oc/muse-spark-1.3-contributor-free",
+  "permissions": [
+    { "action": "read", "resource": "*", "effect": "allow" },
+    { "action": "write", "resource": "*", "effect": "allow" },
+    { "action": "edit", "resource": "*", "effect": "allow" },
+    { "action": "bash", "resource": "*", "effect": "allow" }
+  ]
+}

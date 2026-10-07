@@ -1,0 +1,9 @@
+order_id,produk,qty,harga,status,pembeli
+INV-101,Website Company Profile,1,3500000,lunas,Andi
+INV-102,Landing Page,1,1500000,lunas,Sinta
+INV-103,Foto Produk (10 foto),1,600000,pending,Rudi
+INV-104,Maintenance Bulanan,2,500000,lunas,Dewi
+INV-105,Landing Page,1,1500000,batal,Budi
+INV-106,Website Toko Online,1,5000000,pending,Putri
+INV-107,Foto Produk (20 foto),1,1000000,lunas,Fajar
+INV-108,Maintenance Bulanan,1,500000,lunas,Nina

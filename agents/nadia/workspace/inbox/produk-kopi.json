@@ -1,0 +1,7 @@
+{
+  "nama": "Kopi Susu Gula Aren 1L (contoh demo)",
+  "harga": 35000,
+  "spek": ["kopi arabika 100%", "susu fresh", "gula aren asli", "tahan 3 hari di kulkas", "kemasan botol 1 liter"],
+  "catatan_foto": "foto botol di atas meja kayu, label belum final",
+  "variasi": ["less sugar", "extra shot (+5000)", "paket 3 botol (-10000)"]
+}

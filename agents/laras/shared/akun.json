@@ -1,0 +1,10 @@
+{
+  "akun": [
+    { "kode": "kas", "nama": "Kas & Bank", "tipe": "aset" },
+    { "kode": "piutang", "nama": "Piutang Usaha", "tipe": "aset" },
+    { "kode": "pendapatan-jasa", "nama": "Pendapatan Jasa", "tipe": "pendapatan" },
+    { "kode": "beban-operasional", "nama": "Beban Operasional", "tipe": "beban" },
+    { "kode": "beban-gaji", "nama": "Beban Gaji & Komisi", "tipe": "beban" },
+    { "kode": "modal", "nama": "Modal Owner", "tipe": "ekuitas" }
+  ]
+}

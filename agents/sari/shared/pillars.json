@@ -1,0 +1,10 @@
+{
+  "brand": "Hexa Web Media — jasa bikin website di Bandung",
+  "tone": "santai, to-the-point, campur bahasa sehari-hari",
+  "pillars": [
+    { "id": "harga", "name": "Transparansi harga", "desc": "Jawab anxiety soal harga: estimasi, yang memengaruhi biaya, perbandingan paket" },
+    { "id": "proses", "name": "Di balik layar", "desc": "Proses kerja, revisi, timeline nyata, tools yang dipakai" },
+    { "id": "bukti", "name": "Bukti & testimoni", "desc": "Hasil klien, sebelum/sesudah, review, studi kasus mini" },
+    { "id": "edukasi", "name": "Edukasi bisnis", "desc": "Tips jualan online, kesalahan umum UMKM soal website" }
+  ]
+}
