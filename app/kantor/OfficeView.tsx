@@ -422,6 +422,9 @@ function Walker({ d, route, rotY, selected, onSelect, activity }: {
         <div style={{ background: "rgba(10,12,16,0.85)", border: `1px solid ${selected ? "#fff" : activity || d.place !== "desk" ? "#00f0ff" : "#333"}`, borderRadius: 8, padding: "3px 10px", fontSize: 12, whiteSpace: "nowrap", color: "#eee" }}>
           <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 4, background: STATE_COLOR[d.state], marginRight: 6 }} />
           <strong>{d.name}</strong> <span style={{ opacity: 0.65 }}>{activity ?? (d.place === "desk" ? STATE_LABEL[d.state] : { meeting: "rapat", lounge: "santai", pantry: "ngopi", musholla: "rehat" }[d.place] ?? d.place)}</span>
+          {selected && d.provenance && (
+            <div style={{ fontSize: 11, opacity: 0.85, marginTop: 2, color: "#00f0ff" }}>{d.provenance.label}</div>
+          )}
         </div>
       </Html>
     </group>
@@ -1205,6 +1208,161 @@ function Scene({ divisions, selected, onSelect, night, next, roam }: {
   );
 }
 
+interface AgentDetail {
+  schedule: { wake: string | null; enabled: boolean; skipIfIdle: boolean; after: string[] } | null;
+  systemHead: string;
+  files: Array<{ path: string; size: number; mtime: string }>;
+  decisions: Array<{ id: number; type: string; title: string; status: string; created_at: string }>;
+  runs: Array<{ id: number; started_at: string; status: string; summary: string | null }>;
+  logTail: string | null;
+  tokens30d: number;
+  runs30d: number;
+}
+
+type PanelTab = "status" | "kerja" | "folder";
+
+function AgentPanel({ sel, nextWake, onClose }: {
+  sel: DivisionStatus;
+  nextWake: string | null;
+  onClose: () => void;
+}) {
+  const [ptab, setPtab] = useState<PanelTab>("status");
+  const [detail, setDetail] = useState<AgentDetail | null>(null);
+  const [openFile, setOpenFile] = useState<string | null>(null);
+  const [fileText, setFileText] = useState<string | null>(null);
+
+  useEffect(() => {
+    setPtab("status");
+    setDetail(null);
+    setOpenFile(null);
+    setFileText(null);
+    let alive = true;
+    fetch(`/api/agent?id=${encodeURIComponent(sel.id)}`)
+      .then((r) => r.json())
+      .then((d) => { if (alive && d.ok) setDetail(d); })
+      .catch(() => { /* keep basic info */ });
+    return () => { alive = false; };
+  }, [sel.id]);
+
+  useEffect(() => {
+    const fn = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", fn);
+    return () => window.removeEventListener("keydown", fn);
+  }, [onClose]);
+
+  const open = (p: string) => {
+    setOpenFile(p);
+    setFileText(null);
+    fetch(`/api/agent?id=${encodeURIComponent(sel.id)}&file=${encodeURIComponent(p)}`)
+      .then((r) => r.json())
+      .then((d) => { if (d.ok) setFileText(d.truncated ? d.content + "\n…(dipotong)" : d.content); else setFileText("tidak bisa dibuka"); })
+      .catch(() => setFileText("tidak bisa dibuka"));
+  };
+
+  const prov = sel.provenance;
+  const ago = prov?.freshMin === null || prov?.freshMin === undefined
+    ? "" : prov.freshMin < 1 ? "baru saja" : prov.freshMin < 60 ? `${prov.freshMin} mnt lalu` : `${Math.round(prov.freshMin / 60)} jam lalu`;
+
+  return (
+    <div style={{ position: "absolute", top: 0, right: 0, width: 320, height: "100%", background: "rgba(14,17,22,0.96)", borderLeft: "1px solid #2c343d", padding: 16, overflowY: "auto" }}>
+      <button onClick={onClose} style={{ float: "right", background: "#2c343d" }}>✕</button>
+      <h3 style={{ marginTop: 0 }}>{sel.name} <small>· {sel.role}</small></h3>
+      <p><span className="badge" style={{ background: STATE_COLOR[sel.state] }}>{STATE_LABEL[sel.state]}</span>
+        {sel.pending > 0 && <span className="badge needs">{sel.pending} menunggu kamu</span>}</p>
+      <div style={{ display: "flex", gap: 6, marginBottom: 12 }}>
+        {(["status", "kerja", "folder"] as const).map((t) => (
+          <button
+            key={t}
+            onClick={() => setPtab(t)}
+            style={ptab === t
+              ? { margin: 0, padding: "0.3rem 0.7rem", fontSize: "0.75rem" }
+              : { margin: 0, padding: "0.3rem 0.7rem", fontSize: "0.75rem", background: "transparent", border: "1px solid #2c343d", color: "#aaa", boxShadow: "none" }}
+          >
+            {t === "status" ? "Status" : t === "kerja" ? "Kerja" : "Folder"}
+          </button>
+        ))}
+      </div>
+
+      {ptab === "status" && (
+        <>
+          <h4 style={{ margin: "0 0 6px" }}>Kenapa di sini</h4>
+          {prov
+            ? <p><small><strong>{prov.label}</strong>{ago ? ` · ${ago}` : ""}{prov.detail ? <><br />{prov.detail}</> : null}</small></p>
+            : <p><small>—</small></p>}
+          <h4>Jadwal</h4>
+          <p><small>
+            {detail?.schedule
+              ? <>bangun {detail.schedule.wake ?? "—"} · {detail.schedule.enabled ? "aktif" : "nonaktif"}{detail.schedule.after.length > 0 ? ` · setelah ${detail.schedule.after.join(", ")}` : ""}</>
+              : nextWake ? <>berikutnya: {nextWake}</> : "tidak ada jadwal"}
+          </small></p>
+          <h4>Token 30 hari</h4>
+          <p><small>{detail ? `${detail.tokens30d.toLocaleString("id-ID")} token · ${detail.runs30d} run` : "…"}</small></p>
+          <h4>Run terakhir</h4>
+          <p><small>{sel.lastRun ? `#${sel.lastRun.id} · ${sel.lastRun.status} · ${new Date(sel.lastRun.started_at).toLocaleString("id-ID")}` : "belum pernah bangun"}</small></p>
+          {sel.lastRun?.summary && <pre>{sel.lastRun.summary}</pre>}
+          <p><button onClick={() => window.dispatchEvent(new CustomEvent("kantor:tab", { detail: "dashboard" }))} style={{ fontSize: "0.8rem", padding: "0.4rem 0.8rem" }}>Lihat di panel dashboard →</button></p>
+        </>
+      )}
+
+      {ptab === "kerja" && (
+        <>
+          {!detail && <p><small>Memuat…</small></p>}
+          {detail && detail.decisions.length === 0 && detail.runs.length === 0 && <p><small>Belum ada kerja tercatat.</small></p>}
+          {detail && detail.decisions.length > 0 && (
+            <>
+              <h4 style={{ margin: "0 0 6px" }}>Keputusan</h4>
+              {detail.decisions.map((d) => (
+                <div className="card" key={d.id} style={{ padding: "0.4rem 0.7rem" }}>
+                  <span className={`badge ${d.status === "pending" ? "needs" : ""}`}>{d.status}</span>
+                  <br /><small>#{d.id} · {d.title}</small>
+                </div>
+              ))}
+            </>
+          )}
+          {detail && detail.runs.length > 0 && (
+            <>
+              <h4>Run</h4>
+              {detail.runs.map((r) => (
+                <div className="card" key={r.id} style={{ padding: "0.4rem 0.7rem" }}>
+                  <span className={`badge ${r.status === "needs_you" ? "needs" : r.status === "ok" ? "ok" : ""}`}>{r.status}</span>
+                  <br /><small>#{r.id} · {new Date(r.started_at).toLocaleString("id-ID")}</small>
+                  {r.summary && <pre style={{ marginBottom: 0 }}>{r.summary}</pre>}
+                </div>
+              ))}
+            </>
+          )}
+          {detail?.logTail && (
+            <>
+              <h4>Log terakhir</h4>
+              <pre style={{ maxHeight: 220, overflow: "auto", fontSize: "0.65rem" }}>{detail.logTail}</pre>
+            </>
+          )}
+        </>
+      )}
+
+      {ptab === "folder" && (
+        <>
+          {!detail && <p><small>Memuat…</small></p>}
+          {detail && detail.files.length === 0 && <p><small>Workspace kosong.</small></p>}
+          {detail && detail.files.slice(0, 120).map((f) => (
+            <div key={f.path}>
+              <button
+                onClick={() => open(f.path)}
+                title={`${(f.size / 1024).toFixed(1)} KB`}
+                style={{ margin: 0, padding: "2px 0", fontSize: "0.75rem", background: "transparent", border: 0, color: openFile === f.path ? "#00f0ff" : "#ccc", boxShadow: "none", textAlign: "left", display: "block", width: "100%" }}
+              >
+                {f.path}
+              </button>
+              {openFile === f.path && <pre style={{ maxHeight: 300, overflow: "auto", fontSize: "0.68rem" }}>{fileText ?? "membuka…"}</pre>}
+            </div>
+          ))}
+          <p><small>Baca-saja · dibatasi ke workspace {sel.id}.</small></p>
+        </>
+      )}
+    </div>
+  );
+}
+
 export default function OfficeView() {
   const [divisions, setDivisions] = useState<DivisionStatus[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
@@ -1375,18 +1533,11 @@ export default function OfficeView() {
         <span style={{ fontSize: 12, color: "#8a8f98", padding: "2px 4px" }}>seret = putar · scroll = zoom · klik meja = intip</span>
       </div>
       {sel && (
-        <div style={{ position: "absolute", top: 0, right: 0, width: 300, height: "100%", background: "rgba(14,17,22,0.96)", borderLeft: "1px solid #2c343d", padding: 16, overflowY: "auto" }}>
-          <button onClick={() => setSelected(null)} style={{ float: "right", background: "#2c343d" }}>✕</button>
-          <h3 style={{ marginTop: 0 }}>{sel.name} <small>· {sel.role}</small></h3>
-          <p><span className="badge" style={{ background: STATE_COLOR[sel.state] }}>{STATE_LABEL[sel.state]}</span>
-            {sel.pending > 0 && <span className="badge needs">{sel.pending} menunggu kamu</span>}</p>
-          <h4>Hasil malam ini</h4>
-          {sel.hasilFiles.length === 0 ? <p><small>Belum ada file.</small></p> : <ul>{sel.hasilFiles.map((f) => <li key={f}><small>{f}</small></li>)}</ul>}
-          <h4>Run terakhir</h4>
-          <p><small>{sel.lastRun ? `${sel.lastRun.status} · ${new Date(sel.lastRun.started_at).toLocaleString("id-ID")}` : "belum pernah bangun"}</small></p>
-          {sel.lastRun?.summary && <pre>{sel.lastRun.summary}</pre>}
-          <p><button onClick={() => window.dispatchEvent(new CustomEvent("kantor:tab", { detail: "dashboard" }))} style={{ fontSize: "0.8rem", padding: "0.4rem 0.8rem" }}>Lihat di panel dashboard →</button></p>
-        </div>
+        <AgentPanel
+          sel={sel}
+          nextWake={next.find((n) => n.division === sel.id)?.wake ?? null}
+          onClose={() => setSelected(null)}
+        />
       )}
     </div>
   );

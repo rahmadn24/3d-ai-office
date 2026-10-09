@@ -46,7 +46,7 @@ export interface RunRow {
   summary: string | null;
 }
 
-export default function Hub({ pending, divisions, receivables, total, runs, kas, kasTotal }: {
+export default function Hub({ pending, divisions, receivables, total, runs, kas, kasTotal, failures }: {
   pending: Decision[];
   divisions: Array<{ id: string; name: string; role: string }>;
   receivables: Receivable[];
@@ -54,6 +54,7 @@ export default function Hub({ pending, divisions, receivables, total, runs, kas,
   runs: RunRow[];
   kas: KasEntry[];
   kasTotal: number;
+  failures: Array<{ id: number; division: string; started_at: string; summary: string | null }>;
 }) {
   const [tab, setTab] = useState<Tab>("dashboard");
   const [collapsed, setCollapsed] = useState(false);
@@ -119,6 +120,13 @@ export default function Hub({ pending, divisions, receivables, total, runs, kas,
 
         {tab === "dashboard" && (
           <>
+            {failures.length > 0 && (
+              <div className="card" style={{ borderColor: "rgba(239,68,68,0.45)", background: "rgba(239,68,68,0.08)" }}>
+                <strong>⚠ {failures.length} run gagal 36 jam terakhir</strong>
+                <br />
+                <small>{failures.map((f) => `#${f.id} ${f.division}`).join(" · ")}</small>
+              </div>
+            )}
             <h2 style={{ marginTop: 0 }}>Butuh keputusan</h2>
             <DecisionsList initial={pending} />
             <h2>Riwayat lembur</h2>

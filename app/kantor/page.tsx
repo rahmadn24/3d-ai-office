@@ -37,5 +37,8 @@ export default function Kantor() {
   const runs = db
     .prepare("SELECT id, division, started_at, status, summary FROM runs ORDER BY id DESC LIMIT 10")
     .all() as Array<{ id: number; division: string; started_at: string; status: string; summary: string | null }>;
-  return <Hub pending={pending} divisions={divisions} receivables={receivables} total={total} runs={runs.map((r) => ({ ...r }))} kas={kas} kasTotal={kasTotal} />;
+  const failures = db
+    .prepare("SELECT id, division, started_at, summary FROM runs WHERE status = 'failed' AND datetime(started_at) >= datetime('now', '-36 hours') ORDER BY id DESC")
+    .all() as Array<{ id: number; division: string; started_at: string; summary: string | null }>;
+  return <Hub pending={pending} divisions={divisions} receivables={receivables} total={total} runs={runs.map((r) => ({ ...r }))} kas={kas} kasTotal={kasTotal} failures={failures.map((r) => ({ ...r }))} />;
 }
