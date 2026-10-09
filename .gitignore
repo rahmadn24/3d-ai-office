@@ -2,6 +2,7 @@ node_modules/
 .next/
 .test-dist/
 data/
+backup/
 *.db
 .DS_Store
 .env

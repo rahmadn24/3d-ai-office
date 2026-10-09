@@ -15,6 +15,17 @@ Setelah ubah kode: `npm run build`, lalu
 `launchctl kickstart -k gui/$(id -u)/id.kantor.web` (restart pakai build baru).
 Untuk ngoding: `npm run dev -- -p 3001` (port lain, jangan 3000).
 
+## Backup — tiap 05:30 WIB (JALANKAN SEKARANG)
+
+```bash
+cp cron/id.kantor.backup.plist ~/Library/LaunchAgents/
+launchctl load ~/Library/LaunchAgents/id.kantor.backup.plist
+```
+
+Salin `data/kantor.db` → `backup/kantor-YYYYMMDD-HHMM.db`, verifikasi isi
+sama persis, simpan 14 terakhir. Test manual: `node scripts/backup.mjs`.
+Cek: `tail -f data/backup.log`.
+
 ## Tick — setiap 5 menit (JALANKAN SEKARANG)
 
 ```bash
