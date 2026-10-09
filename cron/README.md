@@ -1,5 +1,20 @@
 # Cron Kantor AI (macOS launchd)
 
+## Web — production server :3000 (KeepAlive, auto-restart)
+
+```bash
+cp cron/id.kantor.web.plist ~/Library/LaunchAgents/
+launchctl load ~/Library/LaunchAgents/id.kantor.web.plist
+```
+
+`next start` hasil `npm run build` — bukan `next dev`, jadi edit file / reload
+tidak bisa membunuh shift malam. Crash/reboot → launchd menyalakan lagi
+sendiri. Cek: `tail -f data/web.log`.
+
+Setelah ubah kode: `npm run build`, lalu
+`launchctl kickstart -k gui/$(id -u)/id.kantor.web` (restart pakai build baru).
+Untuk ngoding: `npm run dev -- -p 3001` (port lain, jangan 3000).
+
 ## Tick — setiap 5 menit (JALANKAN SEKARANG)
 
 ```bash
