@@ -30,7 +30,19 @@ VALID: 201 {"ok":true,"id":1}
 NAMA-PENDEK: 400 {"ok":false,"error":"nama minimal 3 huruf."}
 KONTAK-PENDEK: 400 {"ok":false,"error":"kontak minimal 9 digit angka."}
 PESAN-PENDEK: 400 {"ok":false,"error":"pesan minimal 10 huruf."}
-GET: 200 {"ok":true,"data":[{"id":1,"nama":"Budi Santoso","kontak":"08123456789","pesan":"Halo, saya tertarik dengan layanan Hexa.","savedAt":"2026-10-06T22:40:28.604Z"}]}
+GET: 200 {"ok":true,"data":[{"id":1,"nama":"Budi Santoso","kontak":"08123456789","pesan":"Halo, saya tertarik dengan layanan Hexa.","savedAt":"2026-10-07T23:08:12.616Z"}]}
+```
+
+Uji ulang 2026-10-07 port 3999: hasil sama (1 valid 201 + 3 invalid 400 + GET 200).
+
+Uji ulang 2026-10-08 port 3999:
+
+```
+VALID: 201 {"ok":true,"id":1}
+NAMA-PENDEK: 400 {"ok":false,"error":"nama minimal 3 huruf."}
+KONTAK-PENDEK: 400 {"ok":false,"error":"kontak minimal 9 digit angka."}
+PESAN-PENDEK: 400 {"ok":false,"error":"pesan minimal 10 huruf."}
+GET: 200 {"ok":true,"data":[{"id":1,"nama":"Budi Santoso","kontak":"08123456789","pesan":"Halo, saya tertarik dengan layanan Hexa.","savedAt":"2026-10-08T23:08:07.830Z"}]}
 ```
 
 DB setelah uji di-reset ke `[]` agar data uji tidak ikut deploy.

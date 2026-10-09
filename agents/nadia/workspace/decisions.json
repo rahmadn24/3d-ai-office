@@ -1,0 +1,9 @@
+[
+  {
+    "type": "publish",
+    "title": "Tayangkan listing kopi susu gula aren 1L?",
+    "detail": "Judul + deskripsi + 4 variasi di Hasil/listing-kopi-susu-gula-aren-1l.md. Lolos validasi.",
+    "suggestion": "Tayangkan.",
+    "payload": { "kind": "listing", "file": "Hasil/listing-kopi-susu-gula-aren-1l.md" }
+  }
+]

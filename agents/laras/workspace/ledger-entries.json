@@ -1,0 +1,62 @@
+[
+  {
+    "tanggal": "2026-10-06",
+    "keterangan": "Transfer masuk INV-101 Andi",
+    "akun": "kas",
+    "debit": 3500000
+  },
+  {
+    "tanggal": "2026-10-06",
+    "keterangan": "Transfer masuk INV-101 Andi",
+    "akun": "pendapatan-jasa",
+    "kredit": 3500000
+  },
+  {
+    "tanggal": "2026-10-06",
+    "keterangan": "Transfer masuk INV-102 Sinta",
+    "akun": "kas",
+    "debit": 1500000
+  },
+  {
+    "tanggal": "2026-10-06",
+    "keterangan": "Transfer masuk INV-102 Sinta",
+    "akun": "pendapatan-jasa",
+    "kredit": 1500000
+  },
+  {
+    "tanggal": "2026-10-06",
+    "keterangan": "Bayar domain + hosting",
+    "akun": "beban-operasional",
+    "debit": 450000
+  },
+  {
+    "tanggal": "2026-10-06",
+    "keterangan": "Bayar domain + hosting",
+    "akun": "kas",
+    "kredit": 450000
+  },
+  {
+    "tanggal": "2026-10-06",
+    "keterangan": "Makan malam tim shift (nota-makan)",
+    "akun": "beban-operasional",
+    "debit": 320000
+  },
+  {
+    "tanggal": "2026-10-06",
+    "keterangan": "Makan malam tim shift (nota-makan)",
+    "akun": "kas",
+    "kredit": 320000
+  },
+  {
+    "tanggal": "2026-10-06",
+    "keterangan": "Langganan tools desain Ayu (nota-tools)",
+    "akun": "beban-operasional",
+    "debit": 250000
+  },
+  {
+    "tanggal": "2026-10-06",
+    "keterangan": "Langganan tools desain Ayu (nota-tools)",
+    "akun": "kas",
+    "kredit": 250000
+  }
+]

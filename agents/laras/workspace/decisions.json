@@ -1,0 +1,73 @@
+[
+  {
+    "detail": "Rincian di Hasil/buku-kas-202610.md. 5 transaksi (10 entri), total seimbang Rp6.020.000. Tarik tunai ATM Rp1.000.000 belum dicatat (perlu_tanya).",
+    "payload": {
+      "entries": [
+        {
+          "akun": "kas",
+          "debit": 3500000,
+          "keterangan": "Transfer masuk INV-101 Andi",
+          "tanggal": "2026-10-06"
+        },
+        {
+          "akun": "pendapatan-jasa",
+          "keterangan": "Transfer masuk INV-101 Andi",
+          "kredit": 3500000,
+          "tanggal": "2026-10-06"
+        },
+        {
+          "akun": "kas",
+          "debit": 1500000,
+          "keterangan": "Transfer masuk INV-102 Sinta",
+          "tanggal": "2026-10-06"
+        },
+        {
+          "akun": "pendapatan-jasa",
+          "keterangan": "Transfer masuk INV-102 Sinta",
+          "kredit": 1500000,
+          "tanggal": "2026-10-06"
+        },
+        {
+          "akun": "beban-operasional",
+          "debit": 450000,
+          "keterangan": "Bayar domain + hosting",
+          "tanggal": "2026-10-06"
+        },
+        {
+          "akun": "kas",
+          "keterangan": "Bayar domain + hosting",
+          "kredit": 450000,
+          "tanggal": "2026-10-06"
+        },
+        {
+          "akun": "beban-operasional",
+          "debit": 320000,
+          "keterangan": "Makan malam tim shift (nota-makan)",
+          "tanggal": "2026-10-06"
+        },
+        {
+          "akun": "kas",
+          "keterangan": "Makan malam tim shift (nota-makan)",
+          "kredit": 320000,
+          "tanggal": "2026-10-06"
+        },
+        {
+          "akun": "beban-operasional",
+          "debit": 250000,
+          "keterangan": "Langganan tools desain Ayu (nota-tools)",
+          "tanggal": "2026-10-06"
+        },
+        {
+          "akun": "kas",
+          "keterangan": "Langganan tools desain Ayu (nota-tools)",
+          "kredit": 250000,
+          "tanggal": "2026-10-06"
+        }
+      ],
+      "kind": "ledger"
+    },
+    "suggestion": "Catat.",
+    "title": "Catat 5 transaksi Oktober ke buku kas?",
+    "type": "ledger"
+  }
+]

@@ -1,8 +1,8 @@
-# Status Piutang — 7 Oktober 2026
+# Status Piutang — 8 Oktober 2026
 
 | Nomor | Klien | Total | Umur (hari) | Status |
 |---|---|---|---|---|
-| PNW-202610-001 | Bu Rina, Toko Bunga Melati | Rp2.600.000 | 0 | baru |
+| PNW-202610-001 | Bu Rina, Toko Bunga Melati | Rp2.600.000 | 1 | baru |
 
 Catatan: penawaran terbit 7 Oktober 2026, jatuh tempo 14 Oktober 2026. Draf
 follow-up tersedia di `Hasil/followup-PNW-202610-001.md`, belum dikirim
