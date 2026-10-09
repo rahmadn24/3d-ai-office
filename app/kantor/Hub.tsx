@@ -25,7 +25,18 @@ export interface KasEntry {
   ts: string;
 }
 
-type Tab = "dashboard" | "ngobrol" | "piutang" | "kas";
+type Tab = "dashboard" | "ngobrol" | "piutang" | "kas" | "usage";
+
+interface UsageData {
+  range: string;
+  runs: number;
+  input: number;
+  output: number;
+  reasoning: number;
+  cacheRead: number;
+  byMember: Array<{ division: string; tokens: number; input: number; output: number; runs: number; share: number }>;
+  rows: Array<{ id: number; division: string; started_at: string; total: number }>;
+}
 
 export interface RunRow {
   id: number;
@@ -46,7 +57,21 @@ export default function Hub({ pending, divisions, receivables, total, runs, kas,
 }) {
   const [tab, setTab] = useState<Tab>("dashboard");
   const [collapsed, setCollapsed] = useState(false);
+  const [usage, setUsage] = useState<UsageData | null>(null);
+  const [usageRange, setUsageRange] = useState("7d");
   const rp = (n: number) => "Rp" + n.toLocaleString("id-ID");
+  const compact = (n: number) => n >= 1000000 ? `${(n / 1000000).toFixed(1)}jt` : n >= 1000 ? `${(n / 1000).toFixed(1)}rb` : `${n}`;
+
+  useEffect(() => {
+    if (tab !== "usage") return;
+    let alive = true;
+    setUsage(null);
+    fetch(`/api/usage?range=${usageRange}`)
+      .then((r) => r.json())
+      .then((d) => { if (alive) setUsage(d); })
+      .catch(() => { /* keep empty */ });
+    return () => { alive = false; };
+  }, [tab, usageRange]);
 
   useEffect(() => {
     if (window.innerWidth < 1000) setCollapsed(true);
@@ -79,13 +104,13 @@ export default function Hub({ pending, divisions, receivables, total, runs, kas,
         borderLeft: "1px solid rgba(255,255,255,0.08)", padding: "14px 16px",
       }}>
         <div style={{ display: "flex", gap: 6, marginBottom: 12, alignItems: "center", flexWrap: "wrap" }}>
-          {(["dashboard", "ngobrol", "piutang", "kas"] as const).map((t) => (
+          {(["dashboard", "ngobrol", "piutang", "kas", "usage"] as const).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
               style={tab === t ? {} : { background: "rgba(255,255,255,0.03)", color: "#F8FAFC", border: "1px solid rgba(255,255,255,0.08)", boxShadow: "none" }}
             >
-              {t === "dashboard" ? `dashboard (${pending.length})` : t === "ngobrol" ? "ngobrol" : t === "piutang" ? "piutang" : `kas`}
+              {t === "dashboard" ? `dashboard (${pending.length})` : t === "ngobrol" ? "ngobrol" : t === "piutang" ? "piutang" : t === "kas" ? `kas` : `token`}
             </button>
           ))}
           <span style={{ flex: 1 }} />
@@ -135,6 +160,52 @@ export default function Hub({ pending, divisions, receivables, total, runs, kas,
           </>
         )}
 
+        {tab === "usage" && (
+          <>
+            <h2 style={{ marginTop: 0 }}>Token <small>· dari run log, bukan tebakan</small></h2>
+            <div style={{ display: "flex", gap: 6, marginBottom: 10 }}>
+              {(["24h", "7d", "30d"] as const).map((r) => (
+                <button
+                  key={r}
+                  onClick={() => setUsageRange(r)}
+                  style={usageRange === r ? { padding: "0.3rem 0.7rem", fontSize: "0.75rem" } : { background: "rgba(255,255,255,0.03)", color: "#F8FAFC", border: "1px solid rgba(255,255,255,0.08)", boxShadow: "none", padding: "0.3rem 0.7rem", fontSize: "0.75rem" }}
+                >
+                  {r === "24h" ? "24 jam" : r === "7d" ? "7 hari" : "30 hari"}
+                </button>
+              ))}
+            </div>
+            {!usage && <p><small>Menghitung…</small></p>}
+            {usage && usage.runs === 0 && <p><small>Belum ada run tercatat di rentang ini.</small></p>}
+            {usage && usage.runs > 0 && (
+              <>
+                <p><small>
+                  Total <strong>{compact(usage.input + usage.output + usage.reasoning)}</strong> token ·{" "}
+                  masuk {compact(usage.input)} · keluar {compact(usage.output)} ·{" "}
+                  cache {compact(usage.cacheRead)} · {usage.runs} run
+                </small></p>
+                {usage.byMember.map((m) => (
+                  <div className="card" key={m.division} style={{ padding: "0.5rem 0.8rem" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <span className="badge">{m.division}</span>
+                      <small>{compact(m.tokens)} · {m.share}% · {m.runs} run</small>
+                    </div>
+                    <div style={{ height: 6, borderRadius: 3, background: "rgba(255,255,255,0.08)", marginTop: 6 }}>
+                      <div style={{ height: "100%", borderRadius: 3, width: `${Math.max(2, m.share)}%`, background: "#00f0ff" }} />
+                    </div>
+                  </div>
+                ))}
+                <h2>Run terakhir</h2>
+                {usage.rows.slice(0, 15).map((r) => (
+                  <div className="card" key={r.id} style={{ padding: "0.4rem 0.8rem" }}>
+                    <span className="badge">{r.division}</span>
+                    <small>#{r.id} · {compact(r.total)} token · {new Date(r.started_at).toLocaleString("id-ID")}</small>
+                  </div>
+                ))}
+                <p><small>Biaya: Rp0 — model free-tier, token adalah mata uangnya.</small></p>
+              </>
+            )}
+          </>
+        )}
         {tab === "kas" && (
           <>
             <h2 style={{ marginTop: 0 }}>Buku kas <small>· Laras · append-only</small></h2>
